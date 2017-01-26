@@ -40,20 +40,30 @@ Theta_grad = zeros(size(Theta));
 %                     partial derivatives w.r.t. to each element of Theta
 %
 
+hypothesises = R .* (X * Theta'); % filtered X * Theta' (takes only values where R == 1)
+newY = R .* Y; % filtered Y (takes only values where R == 1)
 
+diff = hypothesises - newY; % matrix of differences between hypothesises and real values
 
+J = sum(sum(diff.^2));
 
+% Compute X_grad and Theta_grad
+X_grad = diff * Theta;
+Theta_grad = diff' * X;
 
+% Compute Regularization for Cost Function
+regX = lambda/2 * sum(sum(Theta.^2));
+regTheta = lambda/2 * sum(sum(X.^2));
 
+% Compute Regularization for Gradient
+regGradX = lambda * X;
+regGradTheta = lambda * Theta;
 
+% Finally, set the value of gradient and cost function
+X_grad = X_grad + regGradX;
+Theta_grad = Theta_grad + regGradTheta;
 
-
-
-
-
-
-
-
+J = 1/2 * J + regTheta + regX;
 
 % =============================================================
 
